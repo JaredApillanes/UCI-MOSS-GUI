@@ -400,7 +400,6 @@ class MossMenu(tk.Menu):
 
     def _change_theme(self, theme):
         def _built_func():
-            print(theme)
             self.master.style.theme_use(theme)
 
         return _built_func
