@@ -390,8 +390,8 @@ class MossMenu(tk.Menu):
         self.add_cascade(label='Window', menu=window)
 
         info_section = tk.Menu(self)
-        info_section.add_command(label='About', command=(lambda: TextPopup(self, 'about_text.txt')))
-        info_section.add_command(label='Help', command=(lambda: TextPopup(self, 'help_text.txt')))
+        info_section.add_command(label='About', command=(lambda: TextPopup(self, 'about_text.txt', 'About')))
+        info_section.add_command(label='Help', command=(lambda: TextPopup(self, 'help_text.txt', 'Help')))
         self.add_cascade(label='Info', menu=info_section)
 
     def _reset_welcome_page(self):
@@ -1071,9 +1071,9 @@ class TabSubmit(ttk.Frame):
 
 
 class TextPopup(TtkDialog):
-    def __init__(self, master, text_file):
+    def __init__(self, master, text_file, title):
         self.text_file = text_file
-        super().__init__(master, title='About')
+        super().__init__(master, title=title)
 
     def body(self, master):
         ttk.Label(master, text='UCI MOSS GUI').pack(side='top')
