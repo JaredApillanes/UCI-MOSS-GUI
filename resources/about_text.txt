@@ -1,44 +1,23 @@
 FOR NON-COMMERCIAL USE ONLY
 
-This application was developed to streamline the plagiarism screening process offered by the
-Measure Of Software Similarity (MOSS) system created by Alex Aiken in 1994. All Security and Legal
-agreements made by using the MOSS system continues to apply to you, the end user. For more
-information on the underlying infrastructure, visit:
+This application was developed to streamline the plagiarism screening process offered by the Measure Of Software Similarity (MOSS) system created by Alex Aiken in 1994. All Security and Legal agreements made by using the MOSS system continues to apply to you, the end user. For more information on the underlying infrastructure, visit:
 
-        http://theory.stanford.edu/~aiken/moss/
+http://theory.stanford.edu/~aiken/moss/
 
 Moss limitations:
-    Moss will only display the top 250 matches.
-    Moss reports expire after 10 days.
+-Moss will only display the top 250 matches.
+-Moss reports expire after 10 days.
 
-The goal of this application was to allow instructors to bulk compare code from past classes with
-that of current student submissions to find cases of potential academic dishonesty while filtering
-out erroneous noise and accounting for the pair-programing environment widely used today.
+The goal of this application was to allow instructors to bulk compare code from past classes with that of current student submissions to find cases of potential academic dishonesty while filtering out erroneous noise and accounting for the pair-programing environment widely used today.
 
-Matches detected using the moss system do not immediately imply plagiarism, but help guide
-defenders of academic honesty towards possible cases to inspect. Other factors to consider include
-similarities introduced from base files provided by the instructor, similarities arising due to
-taught preferences, and almost complete matches between students due to partnerships or pair-
-programming. Each of these issues can be addressed, however, through features implemented by
-moss itself, or by this filtration system (adding base files, setting an ignore limit, supplying
-a partner list).
+Matches detected using the moss system do not immediately imply plagiarism, but help guide defenders of academic honesty towards possible cases to inspect. Other factors to consider include similarities introduced from base files provided by the instructor, similarities arising due to taught preferences, and almost complete matches between students due to partnerships or pair-programming. Each of these issues can be addressed, however, through features implemented by moss itself, or by this filtration system (adding base files, setting an ignore limit, supplying a partner list).
 
-Developed by the Informatics and Computer Science 31 Course Manager at the University of
-California, Irvine under the supervision of the course's Professor, Professor Shannon Alfaro, in
-2019 (and continuing support and development).
+Developed by the Informatics and Computer Science 31 Course Manager at the University of California, Irvine under the supervision of the course's Professor, Professor Shannon Alfaro, in 2019 (and continuing support and development).
 
-For further information, bug-reports, feature suggestions, inquiries, or anything else, please
-contact the developer at:
-
-
-    31-manager@ics.uci.edu
-
+For further information, bug-reports, feature suggestions, inquiries, or anything else, please contact the developer at: 31-manager@ics.uci.edu
 
 Supporting Libraries:
 
-Rudimentary moss integration with python, mosspy, developed and maintained by soachishti
-(soachishti@outlook.com) at https://github.com/soachishti/moss.py. Certain methods have been re-
-written to fit the gui workflow.
+Rudimentary moss integration with python, mosspy, developed and maintained by soachishti (soachishti@outlook.com) at https://github.com/soachishti/moss.py. Certain methods have been re-written to fit the gui workflow.
 
-HTML templates handled by jinja2, developed and maintained by Armin Ronacher
-(armin.ronacher@active-4.com) at http://jinja.pocoo.org.
+HTML templates handled by jinja2, developed and maintained by Armin Ronacher (armin.ronacher@active-4.com) at http://jinja.pocoo.org.
