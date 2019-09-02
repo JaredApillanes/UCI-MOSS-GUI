@@ -25,6 +25,8 @@ class UciMossGui(tk.Tk):
         self.moss = model.MossUCI(self.user_config['moss_id'], self.user_config['language'])
 
         super().__init__(*args, **kwargs)
+        self.fonts = {font: tkfont.nametofont(font).actual() for font in
+                      ('TkDefaultFont', 'TkHeadingFont', 'TkTextFont')}
         self.url_var = tk.StringVar(self)
         self.style = ttk.Style(self)
         self.style.theme_use(self.user_config['theme'])
@@ -84,9 +86,8 @@ class UciMossGui(tk.Tk):
             json.dump(config, config_file)
 
     def create_default_config(self):
-        # TODO: Doesn't affect at all
         self.user_config = {
-            "moss_id": 563499553,
+            "moss_id": 0,
             "language": "python",
             "archive": False,
             "filter": False,
@@ -99,6 +100,21 @@ class UciMossGui(tk.Tk):
             "directory_mode": False,
             "theme": "clam"
         }
+        self.tab_settings.moss_id.set(self.user_config['moss_id'])
+        self.tab_settings.language.set(self.user_config['language'])
+        self.tab_settings.archive_locally.set(self.user_config['archive'])
+        self.tab_settings.filter_report.set(self.user_config['filter'])
+        self.tab_settings.network_threshold.set(self.user_config['network_threshold'])
+        self.tab_settings.network_threshold_selector.config(state=tk.DISABLED)
+        self.tab_settings.zip_report.set(self.user_config['zip'])
+        self.tab_settings.zip_button.config(state=tk.DISABLED)
+        self.tab_settings.ignore_limit.set(self.user_config['ignore_limit'])
+        self.tab_settings.download_report.set(self.user_config['download_report'])
+        self.tab_settings.directory_mode_var.set(self.user_config['directory_mode'])
+        self.welcome_page.disable_welcome_var.set(self.user_config['disable_welcome'])
+        self.tab_submit.review_before.set(self.user_config['review_before_archiving'])
+        self.tab_submit.review_button.config(state=tk.DISABLED)
+        self.style.theme_use(self.user_config['theme'])
 
     def run(self):
         with TemporaryDirectory(dir='.') as temp_dir:
@@ -136,13 +152,13 @@ class UciMossGui(tk.Tk):
         self.moss.setIgnoreLimit(config['ignore_limit'])
         self.moss.setDirectoryMode(config['directory_mode'])
 
-        def sifter(item, add_function):
-            if self.tab_files.file_display.get_children(item):
-                for sub_item in self.tab_files.file_display.get_children(item):
+        def sifter(tree_item, add_function):
+            if self.tab_files.file_display.get_children(tree_item):
+                for sub_item in self.tab_files.file_display.get_children(tree_item):
                     sifter(sub_item, add_function)
             else:
-                add_function(self.tab_files.file_display.item(item, "values")[0],
-                             self.tab_files.file_display.item(item, "text").replace(' ', r'_'))
+                add_function(self.tab_files.file_display.item(tree_item, "values")[0],
+                             self.tab_files.file_display.item(tree_item, "text").replace(' ', r'_'))
 
         for item in self.tab_files.file_display.get_children('I001'):
             sifter(item, self.moss.addBaseFile)
@@ -162,12 +178,12 @@ class UciMossGui(tk.Tk):
             self.notebook.tab(0, state=tk.NORMAL)
             self.notebook.tab(1, state=tk.NORMAL)
             self.notebook.tab(2, state=tk.NORMAL if self.tab_settings.filter_report.get() else tk.DISABLED)
-            self.tab_submit.archive_button.config()  # TODO: figure out what this was
             self.tab_submit.unlock.config(state=tk.DISABLED)
             self.tab_submit.submit.config(state=tk.ACTIVE)
             self.tab_submit.progress_bar.stop()
             messagebox.showerror('Connection Error',
-                                 'Ensure you have a valid moss ID entered in the Settings Tab, and that you have added files to send.')
+                                 'Ensure you have a valid moss ID entered in the Settings Tab, and that you have added '
+                                 'files to send.')
             return
         else:  # Valid Report
             self.url_var.set(url)
@@ -177,7 +193,7 @@ class UciMossGui(tk.Tk):
                 self.moss.filter_report(path=config['directory'], partners=self.partners,
                                         archive=config['archive'],
                                         zip_report=config['zip'],
-                                        network_threshold=config['network_threshold'], filter=config['filter'])
+                                        network_threshold=config['network_threshold'], to_filter=config['filter'])
             else:  # else prime others to handle
                 self.tab_submit.archive_button.config(state=tk.ACTIVE)
                 if config['filter']:
@@ -242,11 +258,10 @@ class MossMenu(tk.Menu):
 
     def _change_font(self, size):
         def _func():
-            pixel_size = int(size / 100 * 13)
-            for font in ("TkDefaultFont", "TkTextFont", "TkHeadingFont"):
-                tkfont.nametofont(font).configure(size=pixel_size)
-            self.master.style.configure('Treeview', rowheight=pixel_size + 10)
-            # TODO: edit to match the 100% -? ==> spacing is off and headingfont is smaller than DefualtFont
+            for name, font in self.master.fonts.items():
+                tkfont.nametofont(name).configure(size=int(font['size'] * (size / 100)))
+            self.master.style.configure('Treeview',
+                                        rowheight=int(self.master.fonts['TkDefaultFont']['size'] * (size / 45)))
 
         return _func
 
@@ -254,7 +269,8 @@ class MossMenu(tk.Menu):
 if __name__ == '__main__':
     app = UciMossGui()
     app.run()
-    # TODO: Submission page has ability to modify settings (can preview before mass download; or decide to download after)
+    # TODO: Submission page has ability to modify settings (can preview before mass download; or decide to download
+    #  after)
     # TODO: weight add files -> stretch horizontally
     # TODO: Remove partners
 
