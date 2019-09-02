@@ -2,6 +2,7 @@ import re
 import datetime
 import pathlib
 import time
+# TODO: implement or not.
 from urllib.request import urlopen
 from collections import defaultdict
 from shutil import make_archive
@@ -69,7 +70,7 @@ class MossUCI(mosspy.Moss):
         self.cur_stu_deactivated = False
 
     def filter_report(self, path: str, partners=(('', ''),), archive=False, zip_report=False, network_threshold=-1,
-                      filter=True):
+                      to_filter=True):
         """
         Based off of the information loaded into the class instance
             (ie. the current vs. old students and report url), cache
@@ -98,7 +99,7 @@ class MossUCI(mosspy.Moss):
         :param zip_report: boolean value indicating whether or not to compress the directory once finished.
         :param network_threshold: set a line-based threshold to filter networks (removes matches
                                     under the given threshold)
-        :param filter: boolean value indicating whether or not to filter the report or not (allowing for archival of
+        :param to_filter: boolean value indicating whether or not to filter the report or not (allowing for archival of
                         original report)
         :return: None
         """
@@ -147,10 +148,12 @@ class MossUCI(mosspy.Moss):
         # Scrape mathes
         content = content.lower()
         click_pattern = re.compile(
-            r'<tr><td><a href=\"(?P<url>http://moss\.stanford\.edu/results/\d+/match(?P<match_num>\d+)\.html)\">(?P<student1>.+) \((?P<perc1>\d{1,2})%\)</a>\s*<td><a href=\"http://moss\.stanford\.edu/results/\d+/match\d+\.html\">(?P<student2>.+) \((?P<perc2>\d{1,2})%\)</a>\s*<td align=right>(?P<lines>\d+)')
+            r'<tr><td><a href=\"(?P<url>http://moss\.stanford\.edu/results/\d+/match(?P<match_num>\d+)\.html)\">'
+            r'(?P<student1>.+) \((?P<perc1>\d{1,2})%\)</a>\s*<td><a href=\"http://moss\.stanford\.edu/results/\d+/match'
+            r'\d+\.html\">(?P<student2>.+) \((?P<perc2>\d{1,2})%\)</a>\s*<td align=right>(?P<lines>\d+)')
         matches = re.findall(click_pattern, content)
 
-        if filter:
+        if to_filter:
             # Generate connection network
             student_graph = defaultdict(set)
             for pair in matches:
@@ -202,7 +205,8 @@ class MossUCI(mosspy.Moss):
                                                         'lines': lines,
                                                         'url': pathlib.Path(f'group{group_num}').joinpath(
                                                             f'match{match_num}.html') if archive else
-                                                        f"http://moss.stanford.edu/results/{result_id}/match{match_num}.html",
+                                                        f"http://moss.stanford.edu/results/{result_id}/"
+                                                        f"match{match_num}.html",
                                                         'partnered': 'Y' if frozenset(
                                                             (student1,
                                                              student2)) in partners else ''})
