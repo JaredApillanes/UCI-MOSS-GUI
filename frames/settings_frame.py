@@ -21,12 +21,11 @@ class TabSettings(ttk.Frame):
         vcmd = (self.register(self._validate_id), '%P', '%S')
         ttk.Entry(sub_handler, textvariable=self.moss_id, validate="key",
                   validatecommand=vcmd).pack(padx=5, pady=2.5,
-                                             anchor='sw')  # TODO: on submit, check id length/validity?
-
+                                             anchor='sw')
         ttk.Label(sub_handler, text='Ignore Limit:', justify='left').pack(padx=5, pady=2.5, anchor='nw')
         self.ignore_limit = tk.IntVar(self)
         self.ignore_limit.set(self.master.master.master.user_config['ignore_limit'])
-        vcmd_ignore = (self.register(self.validate_spin), '%P', '%S')
+        vcmd_ignore = (self.register(self._validate_ignore_limit), '%P', '%S')
         self.ignore_limit_selector = ttk.Spinbox(sub_handler,
                                                  values=[i for i in range(0, 100)],
                                                  textvariable=self.ignore_limit,
@@ -94,6 +93,9 @@ class TabSettings(ttk.Frame):
             return False
 
     def _validate_id(self, total_string, single_change):
+        if not total_string:
+            self.moss_id.set(0)
+            return True
         if single_change.isdigit() and len(total_string) <= 9:
             return True
         else:
@@ -117,17 +119,13 @@ class TabSettings(ttk.Frame):
             self.network_threshold_selector.config(state=tk.DISABLED)
 
     def _toggle_download_report(self):
-        if self.download_report.get():
-            self.master.master.master.tab_submit.dir_entry.config(state=tk.ACTIVE)
-            self.master.master.master.tab_submit.dir_button.config(state=tk.ACTIVE)
-            self.master.master.master.tab_submit.review_button.config(state=tk.ACTIVE)
-            self.archive_locally_box.config(state=tk.ACTIVE)
-        else:
+        value = self.download_report.get()
+        if not value:
             self.archive_locally.set(False)
             self.master.master.master.tab_submit.dir_var.set('')
             self.master.master.master.tab_submit.review_before.set(False)
-            self.master.master.master.tab_submit.dir_entry.config(state=tk.DISABLED)
-            self.master.master.master.tab_submit.dir_button.config(state=tk.DISABLED)
-            self.master.master.master.tab_submit.review_button.config(state=tk.DISABLED)
-            self.archive_locally_box.config(state=tk.DISABLED)
+        self.master.master.master.tab_submit.dir_entry.config(state=tk.ACTIVE if value else tk.DISABLED)
+        self.master.master.master.tab_submit.dir_button.config(state=tk.ACTIVE if value else tk.DISABLED)
+        self.master.master.master.tab_submit.review_button.config(state=tk.ACTIVE if value else tk.DISABLED)
+        self.archive_locally_box.config(state=tk.ACTIVE if value else tk.DISABLED)
         self._toggle_local_settings()
