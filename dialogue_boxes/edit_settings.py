@@ -6,14 +6,14 @@ from dialogue_boxes.ttkDialogue import TtkDialog
 
 class EditSettingsPopup(TtkDialog):
     def __init__(self, parent):
-        super().__init__(parent, title='Add Single File')
+        super().__init__(parent, title='Edit Settings')
 
     def body(self, master):
         # TODO: Add other settings.
         window = ttk.Frame(master)
         window.pack(expand=1, fill='both')
         ttk.Label(master, text='Network Threshold').pack(side='top')
-        vcmd = (self.register(self._validate_spin), '%P', '%S')
+        vcmd = (self.register(self._validate_spin), '%S')
         ttk.Entry(master, textvariable=self.master.master.master.master.tab_settings.network_threshold,
                   validatecommand=vcmd, validate='key').pack()
 
@@ -35,7 +35,7 @@ class EditSettingsPopup(TtkDialog):
             )
             return False
 
-    def _validate_spin(self, total_string, single_change):
+    def _validate_spin(self, single_change):
         if single_change.isdigit():
             return True
         else:
