@@ -141,7 +141,7 @@ class TabSubmit(ttk.Frame):
         partners = self.master.master.master.partners if self.use_active_partners.get() else ()
         try:
             m.filter_report(path=self.master.master.master.temp_dir, partners=partners, archive=False, zip_report=False,
-                            network_threshold=self.network_threshold.get(), filter=True)
+                            network_threshold=self.network_threshold.get(), to_filter=True)
             self.last_filtered_url = m.url
         except (ValueError, ConnectionError) as e:
             messagebox.showerror('Error', e)
@@ -176,7 +176,7 @@ class TabSubmit(ttk.Frame):
             m.deactivate_current_students()
         try:
             m.filter_report(path=save_dir, partners=partners, archive=True, zip_report=False,
-                            network_threshold=self.network_threshold.get(), filter=True)
+                            network_threshold=self.network_threshold.get(), to_filter=True)
         except (ValueError, ConnectionError) as e:
             messagebox.showerror('Error', e)
         self.update_tree(m.template_values.get('entries', []))
