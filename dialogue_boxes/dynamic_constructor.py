@@ -5,32 +5,33 @@ from tkinter import filedialog, messagebox
 
 from dialogue_boxes.ttkDialogue import TtkDialog
 
+
 def popup_builder(name_filter_label: str, file_dialogue_function, selection_type: str, title: str):
-    class _popup(TtkDialog):
+    class Popup(TtkDialog):
         def __init__(self, parent):
             super().__init__(parent, title=title)
+            self.file = tk.StringVar(self)
+            self.name = tk.StringVar(self)
+            self.unzip_name = tk.StringVar(self)
+            self.submission_type = tk.StringVar(self)
 
         def body(self, master):
             window = ttk.Frame(master)
             window.pack(expand=1, fill='both')
 
-            self.file = tk.StringVar(self)
             ttk.Label(window, text='Select File' if file_dialogue_function is not None else 'Path: ').grid(column=0,
                                                                                                            row=0)
             ttk.Entry(window, textvariable=self.file).grid(column=1, row=0)
 
-            self.name = tk.StringVar(self)
             if selection_type == 'wildcard':
                 self.name.set('(.*)')
             ttk.Label(window, text=name_filter_label).grid(column=0, row=1)
             ttk.Entry(window, textvariable=self.name).grid(column=1, row=1)
 
-            self.unzip_name = tk.StringVar(self)
             if selection_type == 'directory_of_zip':
                 ttk.Label(window, text='Name of File in zipfile to submit').grid(column=0, row=2)
                 ttk.Entry(window, textvariable=self.unzip_name).grid(column=1, row=2)
 
-            self.submission_type = tk.StringVar(self)
             self.submission_type.set('Base Files')
             ttk.Label(window, text='Submission Type').grid(column=0, row=3)
             ttk.OptionMenu(window, self.submission_type, self.submission_type.get(),
@@ -75,4 +76,4 @@ def popup_builder(name_filter_label: str, file_dialogue_function, selection_type
         def apply(self):
             self.master.update_tree(*self.result)
 
-    return _popup
+    return Popup
