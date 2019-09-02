@@ -31,12 +31,14 @@ class TabFiles(ttk.PanedWindow):
         self.file_display = ttk.Treeview(self, column='#1')
         self.add(self.file_display)
 
-        def OnDoubleClick(event):
+        def on_double_click(event):
             item = self.file_display.selection()
             selection = self.file_display.selection()
             if selection:
                 confirm = messagebox.askokcancel('Caution',
-                                                 f'Removing {", ".join(self.file_display.item(s, "text") for s in selection[:3])}\nIf this is not'
+                                                 f'Removing '
+                                                 f'{", ".join(self.file_display.item(s, "text") for s in selection[:3])}'
+                                                 f'\nIf this is not'
                                                  f' a bottom level entry, all entries within it will be removed as well'
                                                  f'. Are you sure you want to remove this?',
                                                  default='cancel')
@@ -48,7 +50,7 @@ class TabFiles(ttk.PanedWindow):
                         else:
                             self.file_display.delete(i)
 
-        self.file_display.bind("<Double-1>", OnDoubleClick)
+        self.file_display.bind("<Double-1>", on_double_click)
 
         self.file_display.heading('#0', text='Display Name')
         self.file_display.heading('#1', text='Path')
@@ -61,18 +63,15 @@ class TabFiles(ttk.PanedWindow):
         self.add(buttons_panel)
         buttons_padding_x = 10
         buttons_padding_y = 5
-        ttk.Button(buttons_panel, text='Add Single File', command=(lambda: SingleFile(self))).pack(anchor='nw',
-                                                                                                   padx=buttons_padding_x,
-                                                                                                   pady=buttons_padding_y)
+        ttk.Button(buttons_panel, text='Add Single File',
+                   command=(lambda: SingleFile(self))).pack(anchor='nw', padx=buttons_padding_x, pady=buttons_padding_y)
         ttk.Button(buttons_panel, text='Add Directory of Files', command=(lambda: DirectoryPath(self))).pack(
             anchor='nw', padx=buttons_padding_x,
             pady=buttons_padding_y)
-        ttk.Button(buttons_panel, text='Add Directory of Zip Files', command=(lambda: ZipPath(self))).pack(anchor='nw',
-                                                                                                           padx=buttons_padding_x,
-                                                                                                           pady=buttons_padding_y)
-        ttk.Button(buttons_panel, text='Add by Wildcard', command=(lambda: Wildcard(self))).pack(anchor='nw',
-                                                                                                 padx=buttons_padding_x,
-                                                                                                 pady=buttons_padding_y)
+        ttk.Button(buttons_panel, text='Add Directory of Zip Files',
+                   command=(lambda: ZipPath(self))).pack(anchor='nw', padx=buttons_padding_x, pady=buttons_padding_y)
+        ttk.Button(buttons_panel, text='Add by Wildcard',
+                   command=(lambda: Wildcard(self))).pack(anchor='nw', padx=buttons_padding_x, pady=buttons_padding_y)
 
         ttk.Button(buttons_panel, text='Add Checkmate Directory', command=(lambda: CheckmatePath(self))).pack(
             anchor='nw', padx=buttons_padding_x,
@@ -99,7 +98,9 @@ class TabFiles(ttk.PanedWindow):
             self.file_display.insert(converter[file_type], 'end', text=display_name_or_regex, values=(path,))
         else:
             directory = self.file_display.insert(converter[file_type], 'end',
-                                                 text=f"{display_name_or_regex}{'_' if display_name_or_regex else ''}{path.name}" if selection_type == 'checkmate' else path.name,
+                                                 text=f"{display_name_or_regex}"
+                                                      f"{'_' if display_name_or_regex else ''}"
+                                                      f"{path.name}" if selection_type == 'checkmate' else path.name,
                                                  values=(path,))
             keep_directory = False
             try:
@@ -145,7 +146,7 @@ class TabFiles(ttk.PanedWindow):
                             continue
                         name = ucinetid.name
                         student_restructured_dir = temp_root.joinpath(
-                            f"{display_name_or_regex}{'_' if display_name_or_regex else ''}{name}")  # TODO: test to see what happens when student did not submit any files
+                            f"{display_name_or_regex}{'_' if display_name_or_regex else ''}{name}")
                         student_restructured_dir.mkdir()
                         student = self.file_display.insert(directory, 'end', text=name, values=(ucinetid.as_posix(),))
                         for submission_part in ucinetid.iterdir():
@@ -156,7 +157,9 @@ class TabFiles(ttk.PanedWindow):
                                     location = student_restructured_dir.joinpath(file.name)
                                     shutil.copy(file.as_posix(), location)
                                     self.file_display.insert(student, 'end',
-                                                             text=f"{display_name_or_regex}{'_' if display_name_or_regex else ''}{name}/{file.name}",
+                                                             text=f"{display_name_or_regex}"
+                                                                  f"{'_' if display_name_or_regex else ''}"
+                                                                  f"{name}/{file.name}",
                                                              values=(location,))
                                     files_exist = True
                         if not files_exist:
@@ -174,4 +177,5 @@ class TabFiles(ttk.PanedWindow):
             except OSError as e:
                 self.file_display.delete(directory)
                 tk.messagebox.showerror('Error',
-                                        f'Aborting addition, ran into OSError:\n\n{e}\n\nEnsure You are using the correct file structure')
+                                        f'Aborting addition, ran into OSError:'
+                                        f'\n\n{e}\n\nEnsure You are using the correct file structure')
