@@ -29,7 +29,7 @@ class TabFiles(ttk.PanedWindow):
         self._single_file_root = None
         super().__init__(master, orient=tk.HORIZONTAL, **kwargs)
         self.file_display = ttk.Treeview(self, column='#1')
-        self.add(self.file_display)
+        self.add(self.file_display, weight=1)
 
         def on_double_click(event):
             item = self.file_display.selection()
@@ -139,6 +139,7 @@ class TabFiles(ttk.PanedWindow):
                         self.file_display.delete(directory)
                         messagebox.showwarning('No files found', 'No zip files were found within selected directory')
                 elif selection_type == 'checkmate':
+                    # TODO: Lock in directory mode
                     temp_root = pathlib.Path(self.master.master.master.temp_dir)
                     for ucinetid in pathlib.Path(path).iterdir():
                         files_exist = False
