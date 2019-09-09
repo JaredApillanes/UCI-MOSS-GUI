@@ -198,7 +198,8 @@ class UciMossGui(tk.Tk):
                 self.tab_submit.archive_button.config(state=tk.ACTIVE)
                 if config['filter']:
                     self.tab_submit.edit_settings.config(state=tk.ACTIVE)
-                self.moss.filter_report(self.temp_dir, self.partners, False, False, config['network_threshold'])
+                self.moss.filter_report(self.temp_dir, self.partners, False, False, config['network_threshold'],
+                                        config['filter'])
         self.tab_submit.update_tree()
         self.tab_submit.progress_bar.stop()
 
