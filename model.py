@@ -143,6 +143,10 @@ class MossUCI(mosspy.Moss):
 
         self.template_values['option_info'] = re.search(r'<p>\sOptions (?P<options>.+)\s<HR>', content).group('options')
 
+        if '-d' in self.template_values['option_info']:
+            self.current_quarter_students = {f"{student.split('/')[0]}/" for student in self.current_quarter_students}
+            partners = {frozenset((s + '/', p + '/')) for s, p in partners}
+
         self.template_values['error_info'] = 'Not Implemented Yet'
 
         # Scrape mathes
