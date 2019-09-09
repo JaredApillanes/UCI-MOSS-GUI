@@ -4,6 +4,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 from tkinter import messagebox
+from dialogue_boxes.edit_settings import EditSettingsPopup
 
 
 class TabSubmit(ttk.Frame):
@@ -99,7 +100,6 @@ class TabSubmit(ttk.Frame):
                                             mode='determinate')
         self.progress_bar.grid(column=0, row=4, columnspan=2, sticky='news')
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 

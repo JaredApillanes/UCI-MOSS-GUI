@@ -19,7 +19,6 @@ class TabPartners(ttk.Frame):
         padding = 5
         super().__init__(master, **kwargs)
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
         # self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=2)
 
@@ -40,7 +39,7 @@ class TabPartners(ttk.Frame):
         ttk.Button(file_selector_panel, text='Browse...', command=_browse_partners).pack()
 
         # Dynamic Script Parameter Fields
-        dynamic_settings_panel = ttk.Labelframe(self, text='Custom Parameters:')
+        dynamic_settings_panel = ttk.Labelframe(self, text='Custom Parameters:', padding=10)
         dynamic_settings_panel.grid(column=1, row=0, rowspan=2, sticky='news', padx=padding, pady=padding)
         dynamic_kwargs = defaultdict((lambda: tk.StringVar(self)))
         dyn_entries = {}
