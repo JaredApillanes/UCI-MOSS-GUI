@@ -119,7 +119,20 @@ class UciMossGui(tk.Tk):
     def run(self):
         with TemporaryDirectory(dir='.') as temp_dir:
             self.temp_dir = temp_dir
-            self.geometry('800x533')
+            aspect_ratio = 16 / 9
+            screen_space = 0.45
+            if aspect_ratio > 1:
+                # width is handled first, and height is adjusted accordingly
+                width = self.winfo_screenwidth() * screen_space
+                height = width / aspect_ratio
+            else:
+                # height first, width second
+                height = self.winfo_screenheight() * screen_space
+                width = height * aspect_ratio
+
+            self.geometry(
+                f"{int(width)}x{int(height)}+{int(self.winfo_screenwidth() / 2 - width / 2)}+"
+                f"{int(self.winfo_screenheight() / 2 - height / 2)}")
             self.mainloop()
             self.save_settings()
 
