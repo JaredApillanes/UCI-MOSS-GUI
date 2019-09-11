@@ -28,7 +28,7 @@ def popup_builder(name_filter_label: str, file_dialogue_function, selection_type
 
             self.unzip_name = tk.StringVar(self)
             if selection_type == 'directory_of_zip':
-                ttk.Label(window, text='Name of File in zipfile to submit').grid(column=0, row=2)
+                ttk.Label(window, text='Name of File(s) in zipfile to submit, separated by a ";"').grid(column=0, row=2)
                 ttk.Entry(window, textvariable=self.unzip_name).grid(column=1, row=2)
 
             self.submission_type = tk.StringVar(self)
