@@ -45,10 +45,35 @@ class TabFiles(ttk.PanedWindow):
                 if confirm:
                     for i in item:
                         if i in ('I001', 'I002', 'I003'):
-                            for children in self.file_display.get_children(i):
-                                self.file_display.delete(children)
+                            for child in self.file_display.get_children(i):
+                                file_path = pathlib.Path(self.file_display.item(child, "value")[0])
+                                if pathlib.Path(self.master.master.master.temp_dir) in {p for p in file_path.parents}:
+                                    if file_path.is_dir():
+                                        shutil.rmtree(file_path.absolute())
+                                    else:
+                                        file_path.unlink()
+                                self.file_display.delete(child)
                         else:
-                            self.file_display.delete(i)
+                            _delete_helper(i)
+
+        def _delete_helper(item):
+            file_path = pathlib.Path(self.file_display.item(item, "value")[0])
+            if pathlib.Path(self.master.master.master.temp_dir) in {p for p in file_path.parents}:
+                if file_path.is_dir():
+                    shutil.rmtree(file_path.absolute())
+                else:
+                    file_path.unlink()
+            parent = self.file_display.parent(item)
+            # Look at parent's children and determine if it only has the deleted object as a child
+            if {child for child in self.file_display.get_children(parent) if child != item} or parent in (
+                    'I001', 'I002', 'I003'):
+                for i in self.file_display.get_children(item):
+                    pass
+                    # check if path is in temp_dir, if not,
+                self.file_display.delete(item)
+            # if it's an only child, check parent's dependencies and delete parent
+            else:
+                _delete_helper(parent)
 
         self.file_display.bind("<Double-1>", on_double_click)
 
@@ -97,42 +122,65 @@ class TabFiles(ttk.PanedWindow):
         elif path.is_file():
             self.file_display.insert(converter[file_type], 'end', text=display_name_or_regex, values=(path,))
         else:
-            directory = self.file_display.insert(converter[file_type], 'end',
-                                                 text=f"{display_name_or_regex}"
-                                                      f"{'_' if display_name_or_regex else ''}"
-                                                      f"{path.name}" if selection_type == 'checkmate' else path.name,
-                                                 values=(path,))
+            if selection_type != 'directory_of_zip':
+                directory = self.file_display.insert(converter[file_type], 'end',
+                                                     text=f"{display_name_or_regex}"
+                                                          f"{'_' if display_name_or_regex else ''}"
+                                                          f"{path.name}" if selection_type == 'checkmate' else path.name,
+                                                     values=(path,))
             keep_directory = False
             try:
                 if selection_type == 'directory_of_zip':
-                    temp_root = pathlib.Path(self.master.master.master.temp_dir)
+                    filename = [f.strip() for f in filename.split(';')]
+                    temp_root = pathlib.Path(self.master.master.master.temp_dir).joinpath(path.name)
+                    temp_root.mkdir()
+                    directory = self.file_display.insert(converter[file_type], 'end',
+                                                         text=f"{display_name_or_regex}"
+                                                              f"{'_' if display_name_or_regex else ''}"
+                                                              f"{path.name}" if selection_type == 'checkmate' else path.name,
+                                                         values=(temp_root,))
 
                     # loops through all submissions
                     for submission in pathlib.Path.iterdir(path):
                         if not zipfile.is_zipfile(submission):
                             continue
 
-                        keep_student = False
                         regex_match = re.match(display_name_or_regex, submission.name)
                         student = submission.name if not regex_match else regex_match.group(1)
-                        student_tree_branch = self.file_display.insert(directory, 'end',
-                                                                       text=student,
-                                                                       values=(submission,))
+
                         temp_pointer = temp_root.joinpath(student)
                         temp_pointer.mkdir()
+                        student_tree_branch = self.file_display.insert(directory, 'end',
+                                                                       text=student,
+                                                                       values=(temp_root.joinpath(student),))
 
                         # unzips the code of current student
 
                         zip_ref = zipfile.ZipFile(path.joinpath(submission), 'r')
                         zip_ref.extractall(temp_pointer)
                         zip_ref.close()
-                        for found_file in temp_pointer.iterdir():
-                            if found_file.name == filename or filename == '':
-                                self.file_display.insert(student_tree_branch, 'end',
-                                                         text=f"{student}/{found_file.name}",
-                                                         values=(found_file.as_posix(),))
-                                keep_student = True
-                                keep_directory = True
+
+                        def file_crawler(root: pathlib.Path):
+                            keep = sub_keep = False
+                            sub_dirs = []
+                            for located_path in root.iterdir():
+                                if located_path.is_dir():
+                                    sub_dirs.append(located_path)
+                                elif (
+                                        located_path.name in filename or filename == [
+                                        '']) and located_path.is_file() and not located_path.name.startswith(
+                                        '._') and located_path.name != '.DS_Store':
+                                    self.file_display.insert(student_tree_branch, 'end',
+                                                             text=f"{student}/{located_path.name}",
+                                                             values=(located_path,))
+                                    keep = True
+                            for located_path in sorted(sub_dirs):
+                                sub_keep = sub_keep or file_crawler(located_path)
+                            return sub_keep or keep
+
+                        keep_student = file_crawler(temp_pointer)
+                        keep_directory = keep_directory or keep_student
+
                         if not keep_student:
                             self.file_display.delete(student_tree_branch)
                     if not keep_directory:
@@ -140,28 +188,22 @@ class TabFiles(ttk.PanedWindow):
                         messagebox.showwarning('No files found', 'No zip files were found within selected directory')
                 elif selection_type == 'checkmate':
                     # TODO: Lock in directory mode
-                    temp_root = pathlib.Path(self.master.master.master.temp_dir)
                     for ucinetid in pathlib.Path(path).iterdir():
                         files_exist = False
                         if ucinetid.name == '.DS_Store':
                             continue
                         name = ucinetid.name
-                        student_restructured_dir = temp_root.joinpath(
-                            f"{display_name_or_regex}{'_' if display_name_or_regex else ''}{name}")
-                        student_restructured_dir.mkdir()
-                        student = self.file_display.insert(directory, 'end', text=name, values=(ucinetid.as_posix(),))
+                        student = self.file_display.insert(directory, 'end', text=name, values=(ucinetid,))
                         for submission_part in ucinetid.iterdir():
                             if submission_part.name == '.DS_Store':
                                 continue
                             for file in submission_part.iterdir():
                                 if file.is_file() and file.name != '.DS_Store':
-                                    location = student_restructured_dir.joinpath(file.name)
-                                    shutil.copy(file.as_posix(), location)
                                     self.file_display.insert(student, 'end',
                                                              text=f"{display_name_or_regex}"
                                                                   f"{'_' if display_name_or_regex else ''}"
                                                                   f"{name}/{file.name}",
-                                                             values=(location,))
+                                                             values=(file,))
                                     files_exist = True
                         if not files_exist:
                             self.file_display.delete(student)
