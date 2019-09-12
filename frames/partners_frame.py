@@ -8,7 +8,7 @@ import pathlib
 try:
     from scripts.partner_converter import partner_formatter
 
-    FAILED_IMPORT = True
+    FAILED_IMPORT = False
 except ImportError:
     print(
         'Error importing custom partner formatting script from scripts.partner_converter @ func: partner_formatter\n'
@@ -78,19 +78,26 @@ class TabPartners(ttk.Frame):
                         messagebox.showerror(type(e),
                                              message=f"The parsing script at scripts.partner_converter raised the error"
                                                      f":\n{e}")
-                    _repopulate_tree()
+                    self._repopulate_tree()
 
         ttk.Button(dynamic_settings_panel, text='Convert Selected File', command=_validate_and_convert).pack()
-
-        # Display Found Partnerships
-        def _repopulate_tree():
-            for item in self.found_partners_panel.get_children():
-                self.found_partners_panel.delete(item)
-            for entry in self.master.master.master.partners:
-                entry = list(entry)
-                self.found_partners_panel.insert('', 'end', entry, text=entry[0], values=entry[1])
+        ttk.Button(dynamic_settings_panel, text='Clear All Partners', command=self._clear_partners).pack(pady=5)
 
         self.found_partners_panel = ttk.Treeview(self, column='#1')
         self.found_partners_panel.heading('#0', text='Student 1')
         self.found_partners_panel.heading('#1', text='Student 2')
         self.found_partners_panel.grid(column=0, row=1, sticky='news', padx=padding, pady=padding)
+
+        # Display Found Partnerships
+
+    def _repopulate_tree(self):
+        for item in self.found_partners_panel.get_children():
+            self.found_partners_panel.delete(item)
+        for entry in self.master.master.master.partners:
+            entry = list(entry)
+            self.found_partners_panel.insert('', 'end', entry, text=entry[0], values=entry[1])
+
+    def _clear_partners(self):
+        if messagebox.askokcancel(title='Clear Partners', message='Are you sure you want to clear all partners?'):
+            self.master.master.master.partners = {}
+            self._repopulate_tree()
