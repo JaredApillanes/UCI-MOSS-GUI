@@ -1,16 +1,19 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import inspect
 from collections import defaultdict
 import pathlib
 
 try:
     from scripts.partner_converter import partner_formatter
+
+    FAILED_IMPORT = True
 except ImportError:
     print(
         'Error importing custom partner formatting script from scripts.partner_converter @ func: partner_formatter\n'
         'Loading default handler...')
+    FAILED_IMPORT = True
     partner_formatter = (lambda path_to_csv: eval(open(path_to_csv).read()))
 
 
@@ -19,7 +22,6 @@ class TabPartners(ttk.Frame):
         padding = 5
         super().__init__(master, **kwargs)
         self.columnconfigure(0, weight=1)
-        # self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=2)
 
         # File Selection
@@ -41,6 +43,14 @@ class TabPartners(ttk.Frame):
         # Dynamic Script Parameter Fields
         dynamic_settings_panel = ttk.Labelframe(self, text='Custom Parameters:', padding=10)
         dynamic_settings_panel.grid(column=1, row=0, rowspan=2, sticky='news', padx=padding, pady=padding)
+        if FAILED_IMPORT:
+            ttk.Label(dynamic_settings_panel,
+                      text='Error importing custom partner formatting script from\n'
+                           '    scripts.partner_converter @func: partner_formatter\n'
+                           'Loading default handler...\n'
+                           'Default Handler assumes the file is formatted properly and needs no parsing.\n'
+                           '    If necessary, edit the script and reload the program.\n'
+                           '    See the HELP doc. in the info menu for more information.').pack()
         dynamic_kwargs = defaultdict((lambda: tk.StringVar(self)))
         dyn_entries = {}
         for arg in inspect.signature(partner_formatter).parameters:
@@ -61,16 +71,21 @@ class TabPartners(ttk.Frame):
                         break
                 else:
                     dynamic_kwargs['path_to_csv'] = partners_file
-                    self.master.master.master.partners = partner_formatter(
-                        **{argument: string_var.get() for argument, string_var in dynamic_kwargs.items()})
+                    try:
+                        self.master.master.master.partners = partner_formatter(
+                            **{argument: string_var.get() for argument, string_var in dynamic_kwargs.items()})
+                    except BaseException as e:
+                        messagebox.showerror(type(e),
+                                             message=f"The parsing script at scripts.partner_converter raised the error"
+                                                     f":\n{e}")
                     _repopulate_tree()
 
         ttk.Button(dynamic_settings_panel, text='Convert Selected File', command=_validate_and_convert).pack()
 
         # Display Found Partnerships
         def _repopulate_tree():
-            # TODO: delete items in the tree first
-            # TODO: if error, display error message through message box
+            for item in self.found_partners_panel.get_children():
+                self.found_partners_panel.delete(item)
             for entry in self.master.master.master.partners:
                 entry = list(entry)
                 self.found_partners_panel.insert('', 'end', entry, text=entry[0], values=entry[1])

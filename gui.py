@@ -283,10 +283,4 @@ class MossMenu(tk.Menu):
 if __name__ == '__main__':
     app = UciMossGui()
     app.run()
-    # TODO: Submission page has ability to modify settings (can preview before mass download; or decide to download
-    #  after)
-    # TODO: weight add files -> stretch horizontally
     # TODO: Remove partners
-
-    # http://moss.stanford.edu/results/235519733
-    # 10th assignment submission
