@@ -129,7 +129,7 @@ class UciMossGui(tk.Tk):
                 # height first, width second
                 height = self.winfo_screenheight() * screen_space
                 width = height * aspect_ratio
-
+            self.iconbitmap(r'resources\moss.ico')
             self.geometry(
                 f"{int(width)}x{int(height)}+{int(self.winfo_screenwidth() / 2 - width / 2)}+"
                 f"{int(self.winfo_screenheight() / 2 - height / 2)}")
@@ -283,4 +283,3 @@ class MossMenu(tk.Menu):
 if __name__ == '__main__':
     app = UciMossGui()
     app.run()
-    # TODO: Remove partners
