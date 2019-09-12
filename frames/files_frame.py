@@ -102,7 +102,7 @@ class TabFiles(ttk.PanedWindow):
             anchor='nw', padx=buttons_padding_x,
             pady=buttons_padding_y)
 
-    def update_tree(self, path, display_name_or_regex, file_type, selection_type, filename=''):
+    def update_tree(self, path, display_name_or_regex, file_type, selection_type, filename='', dir_mode=False):
         assert selection_type in ('single', 'directory', 'directory_of_zip', 'wildcard', 'checkmate'), selection_type
         converter = {'Base Files': self.treenode_base_files,
                      'Past Student Submissions': self.treenode_past_subs,
@@ -171,7 +171,7 @@ class TabFiles(ttk.PanedWindow):
                                         '']) and located_path.is_file() and not located_path.name.startswith(
                                         '._') and located_path.name != '.DS_Store':
                                     self.file_display.insert(student_tree_branch, 'end',
-                                                             text=f"{student}/{located_path.name}",
+                                                             text=student + (f"/{located_path.name}" if dir_mode else ''),
                                                              values=(located_path,))
                                     keep = True
                             for located_path in sorted(sub_dirs):

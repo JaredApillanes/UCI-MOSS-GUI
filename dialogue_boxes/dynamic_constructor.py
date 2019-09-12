@@ -30,6 +30,9 @@ def popup_builder(name_filter_label: str, file_dialogue_function, selection_type
             if selection_type == 'directory_of_zip':
                 ttk.Label(window, text='Name of File(s) in zipfile to submit, separated by a ";"').grid(column=0, row=2)
                 ttk.Entry(window, textvariable=self.unzip_name).grid(column=1, row=2)
+                self.dir_name = tk.BooleanVar(self, False)
+                ttk.Checkbutton(window, text='Use Directory mode naming convention', variable=self.dir_name).grid(
+                    column=2, row=1)
 
             self.submission_type = tk.StringVar(self)
             self.submission_type.set('Base Files')
@@ -61,7 +64,8 @@ def popup_builder(name_filter_label: str, file_dialogue_function, selection_type
                 assert path != ''
                 if selection_type == 'directory_of_zip':
                     filename = self.unzip_name.get()
-                    self.result = path, name, sub_type, selection_type, filename
+                    dir_mode = self.dir_name.get()
+                    self.result = path, name, sub_type, selection_type, filename, dir_mode
                 else:
                     self.result = path, name, sub_type, selection_type
                 return True
