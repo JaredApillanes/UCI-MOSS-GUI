@@ -37,4 +37,4 @@ MicahRutrough, UCI alumni
 
 License
 =======
-[GNU General Public License v3.0](license.txt)
+[GNU General Public License v3.0](LICENSE)
