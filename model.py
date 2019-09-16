@@ -1,8 +1,6 @@
 import re
 import datetime
 import pathlib
-import time
-# TODO: implement or not.
 from urllib.request import urlopen
 from collections import defaultdict
 from shutil import make_archive
@@ -10,8 +8,6 @@ from shutil import make_archive
 import mosspy
 import jinja2
 
-MOSSACCOUNT = 563499553
-# TODO: remove personal account number
 BASE_URL = 'http://moss.stanford.edu/results/'
 
 
@@ -183,8 +179,6 @@ class MossUCI(mosspy.Moss):
             if self.debug:
                 print('creating template...')
 
-            # added line if matches[int(match_number)] >= network_threshold
-            # added [group for group in {} if group]
             network_by_matches = [
                 sorted(
                     [group for group in {match_number for student in net for match_number in student_lookup[student] if

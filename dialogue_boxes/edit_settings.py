@@ -9,7 +9,6 @@ class EditSettingsPopup(TtkDialog):
         super().__init__(parent, title='Edit Settings')
 
     def body(self, master):
-        # TODO: Add other settings.
         window = ttk.Frame(master)
         window.pack(expand=1, fill='both')
         ttk.Label(master, text='Network Threshold').pack(side='top')

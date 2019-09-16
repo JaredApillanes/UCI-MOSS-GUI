@@ -187,7 +187,6 @@ class TabFiles(ttk.PanedWindow):
                         self.file_display.delete(directory)
                         messagebox.showwarning('No files found', 'No zip files were found within selected directory')
                 elif selection_type == 'checkmate':
-                    # TODO: Lock in directory mode
                     for ucinetid in pathlib.Path(path).iterdir():
                         files_exist = False
                         if ucinetid.name == '.DS_Store':
@@ -208,7 +207,6 @@ class TabFiles(ttk.PanedWindow):
                         if not files_exist:
                             self.file_display.delete(student)
                 else:
-                    #  TODO: wrap text from tree
                     for found_file in pathlib.Path(path).iterdir():
                         if found_file.is_file() and found_file.name != '.DS_Store':
                             name = re.match(display_name_or_regex, found_file.name)
