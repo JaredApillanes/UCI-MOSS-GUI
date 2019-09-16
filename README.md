@@ -17,7 +17,9 @@ Table of contents
 Installation
 ============
 Download or Clone the repository.
+
 Compatible with python 3.7+
+
 Create a virtual environment and install libraries from requirments.txt
 
 
