@@ -36,7 +36,9 @@ Contact 31-manager@ics.uci.edu to report any issues or suggestions.
 Credits
 =======
 Jared Apillanes, UCI Student and ICS 31 Course Manager
+
 Shannon Alfaro, UCI professor
+
 MicahRutrough, UCI alumni
 
 License
