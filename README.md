@@ -27,6 +27,8 @@ Usage
 =====
 Run gui.py from the created virtual environment.
 
+Visit the [wiki](https://github.com/JaredApillanes/UCI-MOSS-GUI/wiki) for more help and detailed instructions.
+
 Contributing
 ============
 Contact 31-manager@ics.uci.edu to report any issues or suggestions.
