@@ -17,13 +17,17 @@ Table of contents
 Installation
 ============
 Download or Clone the repository.
+
 Compatible with python 3.7+
+
 Create a virtual environment and install libraries from requirments.txt
 
 
 Usage
 =====
 Run gui.py from the created virtual environment.
+
+Visit the [wiki](https://github.com/JaredApillanes/UCI-MOSS-GUI/wiki) for more help and detailed instructions.
 
 Contributing
 ============
@@ -32,7 +36,9 @@ Contact 31-manager@ics.uci.edu to report any issues or suggestions.
 Credits
 =======
 Jared Apillanes, UCI Student and ICS 31 Course Manager
+
 Shannon Alfaro, UCI professor
+
 MicahRutrough, UCI alumni
 
 License
