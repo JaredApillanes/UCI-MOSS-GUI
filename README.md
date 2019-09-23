@@ -18,14 +18,26 @@ Installation
 ============
 Download or Clone the repository.
 
-Compatible with python 3.7+
+Compatible with python 3.7
 
-Create a virtual environment and install libraries from requirments.txt
+Create a virtual environment (optional) and install libraries from requirments.txt
+
+See the [wiki](https://github.com/JaredApillanes/UCI-MOSS-GUI/wiki) for a more in-depth guide.
 
 
 Usage
 =====
-Run gui.py from the created virtual environment.
+1. Start the GUI by running the gui.py modual, located in the repository's main directory, from a python environment with the required depenencies installed.
+
+2. Once running, input your moss-id in the settings tab and select any other appropriate settings for your submission.
+
+3. Navigate to the Files tab and add files to the appropriate groups using the provided methods.
+
+4. Submit to moss servers via the "Submit" tab.
+
+5. Your preferences and settings wil be saved, and any temp files will deleted on a normal quit (use of window's "x") of the applicaiton.
+
+
 
 Visit the [wiki](https://github.com/JaredApillanes/UCI-MOSS-GUI/wiki) for more help and detailed instructions.
 
@@ -35,11 +47,11 @@ Contact 31-manager@ics.uci.edu to report any issues or suggestions.
 
 Credits
 =======
-Jared Apillanes, UCI Student and ICS 31 Course Manager
-
 Shannon Alfaro, UCI professor
 
-MicahRutrough, UCI alumni
+Micah Rutrough, UCI Student and former Course Manager
+
+Jared Apillanes, UCI Student and ICS 31 Course Manager
 
 License
 =======
