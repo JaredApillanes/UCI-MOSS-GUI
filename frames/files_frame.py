@@ -57,7 +57,10 @@ class TabFiles(ttk.PanedWindow):
                             _delete_helper(i)
 
         def _delete_helper(item):
-            file_path = pathlib.Path(self.file_display.item(item, "value")[0])
+            try:
+                file_path = pathlib.Path(self.file_display.item(item, "value")[0])
+            except tk.TclError:
+                return
             if pathlib.Path(self.master.master.master.temp_dir) in {p for p in file_path.parents}:
                 if file_path.is_dir():
                     shutil.rmtree(file_path.absolute())
