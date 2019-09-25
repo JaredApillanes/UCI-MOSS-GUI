@@ -13,17 +13,27 @@ Options {{ option_info }}
 [ <a href="http://moss.stanford.edu/general/format.html" target="_top"> How to Read the Results</a> | <a href="http://moss.stanford.edu/general/tips.html" target="_top"> Tips</a> | <a href="http://moss.stanford.edu/general/faq.html"> FAQ</a> | <a href="mailto:moss-request@cs.stanford.edu">Contact</a> | <a href="http://moss.stanford.edu/general/scripts.html">Submission Scripts</a> | <a href="http://moss.stanford.edu/general/credits.html" target="_top"> Credits</a> ]
 <hr>
 <table>
-<tr><th>File 1<th>File 2<th>Partnered<th><th>Lines Matched
+    <tr>
+        <th>File 1</th>
+        <th>File 2</th>
+        <th>Partnered</th>
+        <th>Lines Matched</th>
+    </tr>
     {% for entry in entries %}
         {% if not entry %}
-            </table>
-            <hr>
-            <table>
+            <tr>
+                <td>--------</td>
+                <td>--------</td>
+                <td>--------</td>
+                <td>--------</td>
+            </tr>
         {% else %}
-            <TR><TD><A HREF="{{ entry['url'] }}">{{ entry['student1'] }} ({{ entry['perc1'] }}%)</A>
-            <TD><A HREF="{{ entry['url'] }}">{{ entry['student2'] }} ({{ entry['perc2'] }}%)</A>
-            <TD><TD>{{ entry['partnered'] }}
-            <TD ALIGN=right>{{ entry['lines'] }}
+            <tr>
+                <td><a HREF="{{ entry['url'] }}">{{ entry['student1'] }} ({{ entry['perc1'] }}%)</a></td>
+                <td><a HREF="{{ entry['url'] }}">{{ entry['student2'] }} ({{ entry['perc2'] }}%)</a></td>
+                <td>{{ entry['partnered'] }}</td>
+                <td ALIGN=right>{{ entry['lines'] }}</td>
+            </tr>
         {% endif %}
     {% endfor %}
     </table>
