@@ -13,6 +13,9 @@ class WelcomePage(ttk.Frame):
                                  text='A GUI for the command line tool "Moss" developed by Alex Aiken.'
                                       '\n\nAn Extension for the file selection and report filtration system.'
                                       '\n\nSee the About and Help pages in the Info menu for more information.'
+                                      '\n\n\nPLEASE NOTE:'
+                                      '\n\nThis GUI is still in development and will be frequently '
+                                      'updated. Please ensure you have the latest version.'
                                       '\n\nNON-COMMERCIAL USE')
         introduction.pack()
 

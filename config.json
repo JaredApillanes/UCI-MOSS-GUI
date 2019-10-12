@@ -1,1 +1,1 @@
-{"moss_id": 0, "language": "python", "archive": false, "filter": true, "zip": false, "network_threshold": 0, "ignore_limit": 1000000, "disable_welcome": true, "review_before_archiving": false, "download_report": false, "directory_mode": false, "theme": "clam"}
+{"moss_id": 0, "language": "python", "archive": false, "filter": false, "zip": false, "network_threshold": -1, "ignore_limit": 1000000, "disable_welcome": false, "review_before_archiving": false, "download_report": false, "directory_mode": false, "theme": "clam"}
