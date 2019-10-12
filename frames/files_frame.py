@@ -217,7 +217,7 @@ class TabFiles(ttk.PanedWindow):
                                 name = name.group(1)
                             else:
                                 name = found_file.name
-                            self.file_display.insert(directory, 'end', text=name, values=(path,))
+                            self.file_display.insert(directory, 'end', text=name, values=(found_file,))
             except OSError as e:
                 self.file_display.delete(directory)
                 tk.messagebox.showerror('Error',
