@@ -119,7 +119,7 @@ class TabFiles(ttk.PanedWindow):
                 location = pathlib.Path(file)
                 name = file
                 name_temp = regex.match(name) if regex else None
-                name = name_temp.group(1) if name_temp else name.name
+                name = name_temp.group(1) if name_temp else name.name if isinstance(name, pathlib.Path) else name
                 self.file_display.insert(wildcard, 'end', text=name, values=(location,))
 
         elif path.is_file():
