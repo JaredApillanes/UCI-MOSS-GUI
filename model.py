@@ -3,7 +3,7 @@ import datetime
 import pathlib
 from urllib.request import urlopen
 from collections import defaultdict
-from shutil import make_archive
+from shutil import make_archive, rmtree
 
 import mosspy
 import jinja2
@@ -148,8 +148,8 @@ class MossUCI(mosspy.Moss):
         # Scrape mathes
         content = content.lower()
         click_pattern = re.compile(
-            r'<tr><td><a href=\"(?P<url>http://moss\.stanford\.edu/results/\d+/match(?P<match_num>\d+)\.html)\">'
-            r'(?P<student1>.+) \((?P<perc1>\d{1,2})%\)</a>\s*<td><a href=\"http://moss\.stanford\.edu/results/\d+/match'
+            r'<tr><td><a href=\"(?P<url>http://moss\.stanford\.edu/results/\d+/\d+/match(?P<match_num>\d+)\.html)\">'
+            r'(?P<student1>.+) \((?P<perc1>\d{1,2})%\)</a>\s*<td><a href=\"http://moss\.stanford\.edu/results/\d+/\d+/match'
             r'\d+\.html\">(?P<student2>.+) \((?P<perc2>\d{1,2})%\)</a>\s*<td align=right>(?P<lines>\d+)')
         matches = re.findall(click_pattern, content)
 
@@ -189,7 +189,8 @@ class MossUCI(mosspy.Moss):
             network_by_matches = sorted(network_by_matches,
                                         key=(
                                             lambda entry: max(entry,
-                                                              key=(lambda ent: match_line_lookup.get(int(ent), 0)))))
+                                                              key=(lambda ent: match_line_lookup.get(int(ent),
+                                                                                                     0))))) if network_by_matches else network_by_matches
         else:
             self.template_values['entries'] = []
             network_by_matches = [[num for num in range(len(matches))]]
@@ -216,6 +217,7 @@ class MossUCI(mosspy.Moss):
 
         # Download match resources (if archiving locally)
         if archive:
+            server = re.match(r"http://moss.stanford.edu/results/(?P<server>\d+)/.*", self.url).groupdict()['server']
             if self.debug:
                 print('Saving Resources...')
             for net, network in enumerate(network_by_matches):
@@ -225,7 +227,7 @@ class MossUCI(mosspy.Moss):
                         f = open(directory.joinpath(
                             pathlib.Path('group' + str(net)).joinpath('match' + match_id + resource + '.html')), 'w')
                         resource_contents = urlopen(
-                            f'{BASE_URL}{result_id}/match{match_id}{resource}.html').read().decode()
+                            f'{BASE_URL}/{server}/{result_id}/match{match_id}{resource}.html').read().decode()
                         if resource == '-top':
                             resource_contents = resource_contents.replace(
                                 f'http://moss.stanford.edu/results/{result_id}/', '')
@@ -258,7 +260,7 @@ class MossUCI(mosspy.Moss):
             make_archive(directory, 'zip', directory)
             if self.debug:
                 print('deleting un-ziped archive')
-            directory.rmdir()
+            rmtree(directory)
 
     @lock_after_send
     def addFile(self, file_path: str, display_name: str):
