@@ -1,5 +1,5 @@
 beautifulsoup4==4.8.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 lxml==4.4.1
 MarkupSafe==1.1.1
 mosspy==1.0.8
