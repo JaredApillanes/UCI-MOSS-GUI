@@ -1,6 +1,6 @@
 beautifulsoup4==4.8.0
 Jinja2==2.10.1
-lxml==4.4.1
+lxml==4.6.5
 MarkupSafe==1.1.1
 mosspy==1.0.8
 soupsieve==1.9.3
